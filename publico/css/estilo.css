@@ -1,0 +1,37 @@
+/*
+ * estilo.css
+ * - Estilos base da aplicação da Clínica Médica
+
+ */
+
+:root {
+  --primary-color: #0284c7;
+  --bg-color: #f8fafc;
+  --text-color: #0f172a;
+  --card-bg: #ffffff;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+#status-card {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  max-width: 500px;
+  text-align: center;
+}
