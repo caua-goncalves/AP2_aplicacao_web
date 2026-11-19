@@ -1,0 +1,35 @@
+{
+  "name": "clinica-agendamento-ap2",
+  "version": "1.0.0",
+  "description": "Sistema de Gestão e Agendamento de Consultas para Clínica Médica - Projeto Final AP2",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js",
+    "esquema": "node esquema.js",
+    "seed": "node seed.js"
+  },
+  "keywords": [
+    "express",
+    "sqlite",
+    "jwt",
+    "api-rest",
+    "clinica",
+    "agendamento"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^11.8.1",
+    "bcrypt": "^5.1.1"
+  }
+}
