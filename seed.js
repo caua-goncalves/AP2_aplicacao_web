@@ -5,8 +5,7 @@
  * Pertence à camada de dados/persistência. Cria o esquema se necessário,
  * limpa registros anteriores para garantir idempotência e insere dados
  * de demonstração com senhas criptografadas em bcrypt para testes.
-
- */
+*/
 
 const bcrypt = require('bcryptjs');
 const { obterConexao } = require('./dados/conexao');
@@ -80,14 +79,26 @@ function popularBanco() {
     VALUES (?, ?, ?, ?, ?)
   `);
 
-  // Gera datas dinâmicas futuras e passadas para facilitar testes práticos
-  const amanha = new Date();
-  amanha.setDate(amanha.getDate() + 1);
-  const dataAmanha14h = `${amanha.toISOString().slice(0, 10)} 14:00:00`;
-  const dataAmanha15h = `${amanha.toISOString().slice(0, 10)} 15:00:00`;
+  // Função auxiliar para obter a próxima data que seja dia útil (Segunda a Sexta)
+  function obterProximoDiaUtil(diasParaFrente = 1) {
+    const d = new Date();
+    d.setDate(d.getDate() + diasParaFrente);
+
+    // 0 = Domingo  |  6 = Sábado
+    while (d.getDay() === 0 || d.getDay() === 6) {
+      d.setDate(d.getDate() + 1);
+    }
+    return d.toISOString().slice(0, 10);
+  }
+
+  const dataUtil1 = obterProximoDiaUtil(1);
+  const dataUtil2 = obterProximoDiaUtil(2);
+
+  const dataAmanha14h = `${dataUtil1} 14:00:00`;
+  const dataAmanha15h = `${dataUtil1} 15:00:00`;
 
   const ontem = new Date();
-  ontem.setDate(ontem.getDate() - 2);
+  ontem.setDate(ontem.getDate() - 3);
   const dataOntem10h = `${ontem.toISOString().slice(0, 10)} 10:00:00`;
   const dataOntem16h = `${ontem.toISOString().slice(0, 10)} 16:00:00`;
 
@@ -97,7 +108,7 @@ function popularBanco() {
   // Consulta agendada futura (Dra. Ana - Paciente Maria)
   stmtConsulta.run(paciente2Id, medico2Id, dataAmanha15h, 'agendada', 'Avaliação dermatológica de rotina');
 
-  // Consulta concluída no passado (para testar agregação e relatórios)
+  // Consulta concluída no passado - para testar agregação e relatórios
   stmtConsulta.run(paciente2Id, medico1Id, dataOntem10h, 'concluida', 'Eletrocardiograma realizado com sucesso.');
 
   // Consulta cancelada no passado
