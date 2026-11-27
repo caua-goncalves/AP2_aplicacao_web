@@ -1,6 +1,6 @@
 # AP2 - Linguagens e Tecnologias para Desenvolvimento Web
 
-# Sistema de Clínica Médica
+# Sistema de Clínica Médica : Clínica CGD
 
 
 
@@ -177,7 +177,6 @@ As regras de negócio são obrigatoriamente garantidas no **servidor**:
 
 ## 9. Medidas de Segurança Adotadas
 
-
 1. **Armazenamento Seguro de Senhas:** Senhas criptografadas com `bcrypt` (10 rounds de salt com chave lenta), nunca gravadas em texto puro ([`servicos/authServico.js`](servicos/authServico.js)).
 2. **Autenticação Stateless com JWT:** Emissão e verificação de JSON Web Token com tempo de expiração (`JWT_EXPIRES_IN`) transmitido via cabeçalho `Authorization: Bearer <token>` ([`middlewares/autenticar.js`](middlewares/autenticar.js)).
 3. **Controle de Acesso Baseado em Papéis (RBAC):** Middleware customizado que bloqueia acessos a operações restritas com HTTP 403 ([`middlewares/autorizar.js`](middlewares/autorizar.js)).
@@ -188,13 +187,32 @@ As regras de negócio são obrigatoriamente garantidas no **servidor**:
 8. **Prevenção contra Enumeração de Usuários:** Mensagem unificada e genérica no login para falhas de e-mail ou senha ([`servicos/authServico.js`](servicos/authServico.js)).
 9. **Tratamento Centralizado e Ocultação de Stack Traces:** Erros não tratados (500) não expõem detalhes de código ou dados da infraestrutura para o cliente ([`middlewares/tratarErros.js`](middlewares/tratarErros.js)).
 10. **Blindagem contra Vazamento de Segredos no Git:** Arquivo `.gitignore` configurado para impedir o envio de `.env`, `node_modules/` e arquivos de banco `*.db` ([`.gitignore`](.gitignore)).
+11. **Prevenção Ativa contra Cross-Site Scripting (XSS):** Uso exclusivo de `textContent` (e `document.createElement`) para renderização de dados dinâmicos da API no DOM, sem uso de `innerHTML` com dados externos ([`publico/js/app.js`](publico/js/app.js)).
+12. **Proteção contra Duplo Clique em Formulários:** Desabilitação imediata dos botões durante requisições HTTP assíncronas, prevenindo envios duplicados acidentais ([`publico/js/app.js`](publico/js/app.js)).
 
 ---
 
-## 10. Estrutura do Repositório
+## 10. Front-End e os Quatro Estados de Tela
+
+A interface web foi desenvolvida com **HTML5 semântico, CSS3 moderno e JavaScript puro**, sendo servida diretamente pelo Express através da pasta `publico/`.
+
+Todas as telas que realizam busca ou processamento de dados implementam os **quatro estados fundamentais**:
+
+| Estado de Tela | Como se Manifesta na Interface | Onde está Implementado |
+| :--- | :--- | :--- |
+| **1. Carregando** | Exibe um *spinner* circular animado com mensagem informativa (ex.: *"Buscando suas consultas..."*, *"Consolidando estatísticas da clínica..."*) enquanto a requisição `fetch` está em andamento. | Função `renderizarEstadoCarregando()` em [`publico/js/app.js`](publico/js/app.js) e classe `.estado-carregando` em [`publico/css/estilo.css`](publico/css/estilo.css). |
+| **2. Vazio** | Caso a API retorne um conjunto vazio (ex.: nenhuma consulta marcada ou nenhum resultado para o filtro selecionado), apresenta um cartão pontilhado com ícone descritivo e aviso amigável ao usuário. | Função `renderizarEstadoVazio()` em [`publico/js/app.js`](publico/js/app.js) e classe `.estado-vazio` em [`publico/css/estilo.css`](publico/css/estilo.css). |
+| **3. Erro** | Em caso de falha de conexão ou resposta de erro semântico da API (ex.: `401`, `403`, `409 Conflict`), exibe um alerta avermelhado com a mensagem de erro exata e um botão de ação "Tentar Novamente". | Função `renderizarEstadoErro()` em [`publico/js/app.js`](publico/js/app.js) e classe `.estado-erro` em [`publico/css/estilo.css`](publico/css/estilo.css). |
+| **4. Sucesso** | Exibe os dados organizados em tabelas responsivas e cartões com valores formatados em moeda (`R$`), badges de status (`agendada`, `concluida`, `cancelada`) e botões de ação contextuais. | Funções `renderizarTabelaPaciente()`, `renderizarTabelaMedico()` e `carregarRelatoriosMedico()` em [`publico/js/app.js`](publico/js/app.js). |
+
+---
+
+
+## 11. Estrutura do Repositório
 
 ```text
 AP2_aplicacao_web/
+├── README.md                 # Documentação e guia de execução do projeto
 ├── .env.example              # Modelo de variáveis de ambiente sem credenciais
 ├── .gitignore                # Regras de exclusão do Git (node_modules, .env, *.db)
 ├── app.js                    # Ponto de entrada do Express e orquestração de middlewares
@@ -205,8 +223,6 @@ AP2_aplicacao_web/
 ├── seed.js                   # Script de povoamento com dados e usuários de demonstração
 ├── dados/                    # CAMADA DE DADOS (SQL Parametrizado, JOIN, Agregações)
 ├── servicos/                 # CAMADA DE SERVIÇOS (Regras de Negócio e Validações)
-├── middlewares/              # MIDDLEWARES DO EXPRESS (RBAC,JWT, Middleware próprio, tratamento de erros, Proteção contra força bruta)
+├── middlewares/              # MIDDLEWARES DO EXPRESS (RBAC, JWT, Middleware próprio, tratamento de erros, Rate Limit)
 └── publico/                  # FRONT-END (HTML, CSS e JS Vanilla servidos pelo Express)
 ```
-
----
