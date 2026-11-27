@@ -3,20 +3,236 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clínica Médica - Gestão de Consultas</title>
+  <title>Clínica Médica — Gestão de Consultas</title>
   <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
-  <header>
-    <h1>Clínica Médica - Sistema de Agendamento</h1>
-    <p>Projeto Final AP2 - Linguagens e Tecnologias Web</p>
-  </header>
-  <main>
-    <div id="status-card">
-      <h2>Ambiente Configurado com Sucesso</h2>
-      <p id="api-status">Conectando à API...</p>
+
+  
+  <!-- Cabeçalho principal e barra de sessão -->
+  <header class="cabecalho-principal">
+    <div class="container container-cabecalho">
+      <div class="marca">
+        <span class="icone-cruz">✚</span>
+        <div>
+          <h1>Clínica CGD</h1>
+          <p class="subtitulo">Sistema de Consultas Médicas</p>
+        </div>
+      </div>
+
+      <div id="painel-usuario" class="painel-usuario oculto">
+        <div class="usuario-info">
+          <span id="usuario-nome" class="usuario-nome"></span>
+          <span id="usuario-badge" class="badge"></span>
+        </div>
+        <button id="btn-logout" class="btn btn-secundario btn-sm">Sair</button>
+      </div>
     </div>
+  </header>
+
+  <main class="container">
+
+    
+    <!-- Seção pública: login e cadastro -->
+    <section id="secao-auth" class="secao-auth">
+      <div class="cartao-auth">
+        <div class="abas-auth">
+          <button id="aba-login" class="aba-btn ativa">Acessar Conta</button>
+          <button id="aba-cadastro" class="aba-btn">Novo Paciente</button>
+        </div>
+
+        <!-- Formulário de login -->
+        <form id="form-login" class="form-auth">
+          <h2>Entrar no Sistema</h2>
+          <p class="instrucao">Acesse com sua conta de paciente ou médico.</p>
+
+          <div id="msg-login" class="mensagem-alerta oculto"></div>
+
+          <div class="campo-form">
+            <label for="login-email">E-mail</label>
+            <input type="email" id="login-email" placeholder="seu.email@exemplo.com" required autocomplete="email">
+          </div>
+
+          <div class="campo-form">
+            <label for="login-senha">Senha</label>
+            <input type="password" id="login-senha" placeholder="Sua senha secreta" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" id="btn-login" class="btn btn-primario btn-bloco">
+            <span>Entrar</span>
+          </button>
+
+          <div class="dica-contas">
+            <strong>Contas de demonstração:</strong><br>
+            • Paciente: <code>paciente@clinica.com</code> | Senha: <code>senha123</code><br>
+            • Médico: <code>medico@clinica.com</code> | Senha: <code>senha123</code>
+          </div>
+        </form>
+
+        <!-- Formulário de cadastro de paciente -->
+        <form id="form-cadastro" class="form-auth oculto">
+          <h2>Cadastro de Paciente</h2>
+          <p class="instrucao">Crie sua conta para agendar consultas online.</p>
+
+          <div id="msg-cadastro" class="mensagem-alerta oculto"></div>
+
+          <div class="campo-form">
+            <label for="cad-nome">Nome Completo</label>
+            <input type="text" id="cad-nome" placeholder="Seu nome completo" required minlength="3">
+          </div>
+
+          <div class="campo-form">
+            <label for="cad-email">E-mail</label>
+            <input type="email" id="cad-email" placeholder="seu.email@exemplo.com" required>
+          </div>
+
+          <div class="campo-form">
+            <label for="cad-senha">Senha (mínimo 6 caracteres)</label>
+            <input type="password" id="cad-senha" placeholder="Escolha uma senha segura" required minlength="6" autocomplete="new-password">
+          </div>
+
+          <button type="submit" id="btn-cadastro" class="btn btn-sucesso btn-bloco">
+            <span>Criar Minha Conta</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+   
+    <!-- Seção do paciente (Agendamento e Minhas Consultas) -->
+    <section id="secao-paciente" class="secao-painel oculto">
+      <div class="grade-paciente">
+
+        <!-- Coluna da esquerda: formulário de agendamento -->
+        <div class="cartao">
+          <div class="cartao-cabecalho">
+            <h2>Agendar Nova Consulta</h2>
+            <p>Selecione um profissional, data e horário.</p>
+          </div>
+
+          <form id="form-agendar" class="form-agendamento">
+            <div id="msg-agendar" class="mensagem-alerta oculto"></div>
+
+            <div class="campo-form">
+              <label for="agendar-medico">Médico / Especialidade</label>
+              <select id="agendar-medico" required>
+                <option value="">Carregando médicos...</option>
+              </select>
+              <div id="info-medico-selecionado" class="info-auxiliar"></div>
+            </div>
+
+            <div class="campo-form">
+              <label for="agendar-data-hora">Data e Horário</label>
+              <input type="datetime-local" id="agendar-data-hora" required step="1800">
+              <small class="texto-ajuda">Dias úteis (seg-sex), das 08:00 às 18:00 (mínimo 2h de antecedência).</small>
+            </div>
+
+            <div class="campo-form">
+              <label for="agendar-obs">Observações / Motivo da Consulta</label>
+              <textarea id="agendar-obs" rows="3" placeholder="Ex.: Sintomas, retorno ou check-up de rotina (opcional)"></textarea>
+            </div>
+
+            <button type="submit" id="btn-agendar" class="btn btn-primario btn-bloco">
+              <span>Confirmar Agendamento</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Coluna da direita: histórico de consultas do paciente -->
+        <div class="cartao">
+          <div class="cartao-cabecalho cabecalho-com-filtros">
+            <div>
+              <h2>Minhas Consultas</h2>
+              <p>Histórico completo com proteção anti-IDOR.</p>
+            </div>
+            <div class="grupo-filtro">
+              <label for="filtro-status-paciente">Status:</label>
+              <select id="filtro-status-paciente" class="select-filtro">
+                <option value="">Todos</option>
+                <option value="agendada">Agendada</option>
+                <option value="concluida">Concluída</option>
+                <option value="cancelada">Cancelada</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Container dos 4 estados de tela do paciente -->
+          <div id="container-estado-paciente" class="area-conteudo-estados">
+            <!-- 1. Carregando | 2. Vazio | 3. Erro | 4. Sucesso (injetados dinamicamente) -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Seção do médico (Agenda Diária e Relatórios Analíticos) -->
+    <section id="secao-medico" class="secao-painel oculto">
+      
+      <!-- Cards de Resumo e Indicadores (Agregações) -->
+      <div class="grade-metricas">
+        <div class="card-metrica">
+          <span class="metrica-titulo">Total de Agendamentos</span>
+          <span id="metrica-total" class="metrica-valor">-</span>
+        </div>
+        <div class="card-metrica card-metrica-sucesso">
+          <span class="metrica-titulo">Atendimentos Concluídos</span>
+          <span id="metrica-concluidas" class="metrica-valor">-</span>
+        </div>
+        <div class="card-metrica card-metrica-alerta">
+          <span class="metrica-titulo">Consultas Canceladas</span>
+          <span id="metrica-canceladas" class="metrica-valor">-</span>
+        </div>
+        <div class="card-metrica card-metrica-destaque">
+          <span class="metrica-titulo">Receita Confirmada (Geral)</span>
+          <span id="metrica-faturamento" class="metrica-valor">-</span>
+        </div>
+      </div>
+
+      <!-- Agenda de consultas do médico -->
+      <div class="cartao espaco-topo">
+        <div class="cartao-cabecalho cabecalho-com-filtros">
+          <div>
+            <h2>Agenda de Consultas do Profissional</h2>
+            <p>Gerenciamento e conclusão de atendimentos médicos.</p>
+          </div>
+          <div class="grupo-filtro">
+            <label for="filtro-status-medico">Status:</label>
+            <select id="filtro-status-medico" class="select-filtro">
+              <option value="">Todos</option>
+              <option value="agendada" selected>Apenas Agendadas</option>
+              <option value="concluida">Concluídas</option>
+              <option value="cancelada">Canceladas</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Container dos 4 estados de tela do médico -->
+        <div id="container-estado-medico" class="area-conteudo-estados">
+          <!-- Injetado via JavaScript seguro -->
+        </div>
+      </div>
+
+      <!-- Relatório analítico por especialidade -->
+      <div class="cartao espaco-topo">
+        <div class="cartao-cabecalho">
+          <h2>Produtividade por Especialidade (Agregação SQL)</h2>
+          <p>Métricas consolidadas diretamente no banco de dados com <code>COUNT</code>, <code>SUM</code> e <code>GROUP BY</code>.</p>
+        </div>
+        <div id="container-estado-relatorios" class="area-conteudo-estados">
+          <!-- Injetado via JavaScript -->
+        </div>
+      </div>
+
+    </section>
+
   </main>
+
+  <footer class="rodape-principal">
+    <div class="container">
+      <p>Clínica Médica CGD — Projeto AP2 — Aplicação web Completa</p>
+    </div>
+  </footer>
+
   <script src="js/app.js"></script>
 </body>
 </html>

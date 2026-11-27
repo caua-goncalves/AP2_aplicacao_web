@@ -1,37 +1,591 @@
 /*
- * estilo.css
- * - Estilos base da aplicação da Clínica Médica
-
- */
+   Arquivo: publico/css/estilo.css
+   Descrição: Estilos modernos, responsivos e acessíveis para o sistema da Clínica.
+   Contempla componentes de cartões, formulários, tabelas e estilização
+   explícita dos 4 estados de tela (Carregando, Vazio, Erro e Sucesso).
+*/
 
 :root {
-  --primary-color: #0284c7;
-  --bg-color: #f8fafc;
-  --text-color: #0f172a;
-  --card-bg: #ffffff;
+  --cor-primaria: #0284c7;
+  --cor-primaria-hover: #0369a1;
+  --cor-sucesso: #16a34a;
+  --cor-sucesso-hover: #15803d;
+  --cor-perigo: #dc2626;
+  --cor-perigo-hover: #b91c1c;
+  --cor-aviso: #d97706;
+  --cor-fundo: #f1f5f9;
+  --cor-superficie: #ffffff;
+  --cor-texto: #0f172a;
+  --cor-texto-mutado: #64748b;
+  --cor-borda: #cbd5e1;
+  --sombra-card: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --sombra-flutuante: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --borda-raio: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  width: 100%;
+}
+
+/* Cabeçalho Principal */
+
+.cabecalho-principal {
+  background-color: var(--cor-superficie);
+  border-bottom: 1px solid var(--cor-borda);
+  padding: 1rem 0;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+}
+
+.container-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icone-cruz {
+  font-size: 1.8rem;
+  color: var(--cor-primaria);
+  font-weight: bold;
+}
+
+.marca h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--cor-texto);
+}
+
+.subtitulo {
+  font-size: 0.85rem;
+  color: var(--cor-texto-mutado);
+}
+
+.painel-usuario {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.usuario-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.usuario-nome {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Botões e Controles */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--borda-raio);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease, transform 0.05s ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* Proteção visual contra clique duplo */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-primario {
+  background-color: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.btn-primario:hover:not(:disabled) {
+  background-color: var(--cor-primaria-hover);
+}
+
+.btn-sucesso {
+  background-color: var(--cor-sucesso);
+  color: #ffffff;
+}
+
+.btn-sucesso:hover:not(:disabled) {
+  background-color: var(--cor-sucesso-hover);
+}
+
+.btn-perigo {
+  background-color: var(--cor-perigo);
+  color: #ffffff;
+}
+
+.btn-perigo:hover:not(:disabled) {
+  background-color: var(--cor-perigo-hover);
+}
+
+.btn-secundario {
+  background-color: transparent;
+  border-color: var(--cor-borda);
+  color: var(--cor-texto);
+}
+
+.btn-secundario:hover:not(:disabled) {
+  background-color: #e2e8f0;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.btn-bloco {
+  width: 100%;
+}
+
+/* Badges (Etiquetas de Status e Papel) */
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-paciente {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.badge-medico {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.badge-agendada {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.badge-concluida {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.badge-cancelada {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Seção de autenticação (Abas e Cartão de Login/Cadastro) */
+
+.secao-auth {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 0;
+}
+
+.cartao-auth {
+  background-color: var(--cor-superficie);
+  border-radius: var(--borda-raio);
+  box-shadow: var(--sombra-flutuante);
+  width: 100%;
+  max-width: 450px;
+  border: 1px solid var(--cor-borda);
+  overflow: hidden;
+}
+
+.abas-auth {
+  display: flex;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.aba-btn {
+  flex: 1;
+  padding: 0.9rem;
+  background-color: #f8fafc;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--cor-texto-mutado);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.aba-btn.ativa {
+  background-color: var(--cor-superficie);
+  color: var(--cor-primaria);
+  border-bottom: 2px solid var(--cor-primaria);
+}
+
+.form-auth {
   padding: 2rem;
+}
+
+.form-auth h2 {
+  font-size: 1.3rem;
+  margin-bottom: 0.25rem;
+}
+
+.instrucao {
+  font-size: 0.85rem;
+  color: var(--cor-texto-mutado);
+  margin-bottom: 1.5rem;
+}
+
+.campo-form {
+  margin-bottom: 1.25rem;
+}
+
+.campo-form label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.campo-form input,
+.campo-form select,
+.campo-form textarea {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.95rem;
+  border-radius: var(--borda-raio);
+  border: 1px solid var(--cor-borda);
+  background-color: #ffffff;
+  color: var(--cor-texto);
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.campo-form input:focus,
+.campo-form select:focus,
+.campo-form textarea:focus {
+  outline: none;
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+}
+
+.texto-ajuda {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--cor-texto-mutado);
+  margin-top: 0.3rem;
+}
+
+.dica-contas {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background-color: #f8fafc;
+  border: 1px dashed var(--cor-borda);
+  border-radius: var(--borda-raio);
+  font-size: 0.8rem;
+  color: var(--cor-texto-mutado);
+  line-height: 1.4;
+}
+
+.dica-contas code {
+  color: var(--cor-texto);
+  font-weight: 600;
+}
+
+/* Layout de Painéis (Paciente e Médico) */
+.secao-painel {
+  padding: 2rem 0;
+}
+
+.grade-paciente {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .grade-paciente {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cartao {
+  background-color: var(--cor-superficie);
+  border-radius: var(--borda-raio);
+  box-shadow: var(--sombra-card);
+  border: 1px solid var(--cor-borda);
+  padding: 1.5rem;
+}
+
+.cartao-cabecalho {
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.75rem;
+}
+
+.cartao-cabecalho h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.cartao-cabecalho p {
+  font-size: 0.85rem;
+  color: var(--cor-texto-mutado);
+}
+
+.cabecalho-com-filtros {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.grupo-filtro {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.select-filtro {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.85rem;
+  border-radius: var(--borda-raio);
+  border: 1px solid var(--cor-borda);
+  background-color: #fff;
+}
+
+.info-auxiliar {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--cor-primaria);
+  font-weight: 600;
+}
+
+.espaco-topo {
+  margin-top: 1.5rem;
+}
+
+/* Cards de métricas (Médico) */
+.grade-metricas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.card-metrica {
+  background-color: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--borda-raio);
+  padding: 1.25rem;
+  box-shadow: var(--sombra-card);
+  display: flex;
+  flex-direction: column;
+}
+
+.metrica-titulo {
+  font-size: 0.85rem;
+  color: var(--cor-texto-mutado);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.metrica-valor {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--cor-texto);
+  margin-top: 0.35rem;
+}
+
+.card-metrica-sucesso .metrica-valor {
+  color: var(--cor-sucesso);
+}
+
+.card-metrica-alerta .metrica-valor {
+  color: var(--cor-perigo);
+}
+
+.card-metrica-destaque .metrica-valor {
+  color: var(--cor-primaria);
+}
+
+/* Os 4 estado de tela */
+
+.area-conteudo-estados {
+  min-height: 200px;
+}
+
+/* Estado 1: Carregando */
+.estado-carregando {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  color: var(--cor-texto-mutado);
 }
 
-header {
-  text-align: center;
-  margin-bottom: 2rem;
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top-color: var(--cor-primaria);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+  margin-bottom: 1rem;
 }
 
-#status-card {
-  background: var(--card-bg);
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  max-width: 500px;
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
+/* Estado 2: Vazio */
+.estado-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3.5rem 1rem;
   text-align: center;
+  color: var(--cor-texto-mutado);
+  background-color: #f8fafc;
+  border: 2px dashed var(--cor-borda);
+  border-radius: var(--borda-raio);
+}
+
+.estado-vazio .icone-vazio {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.estado-vazio p {
+  font-size: 0.95rem;
+}
+
+/* Estado 3: Erro */
+.estado-erro {
+  padding: 1.5rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--borda-raio);
+  color: #991b1b;
+  margin: 1rem 0;
+}
+
+.estado-erro h3 {
+  font-size: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.estado-erro p {
+  font-size: 0.9rem;
+}
+
+/* Estado 4: Sucesso */
+.tabela-container {
+  overflow-x: auto;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--borda-raio);
+}
+
+.tabela-dados {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.tabela-dados th,
+.tabela-dados td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.tabela-dados th {
+  background-color: #f8fafc;
+  color: var(--cor-texto-mutado);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.tabela-dados tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.tabela-dados td.acoes {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* Mensagens de alerta (Feedback de Formulários) */
+
+.mensagem-alerta {
+  padding: 0.75rem 1rem;
+  border-radius: var(--borda-raio);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.mensagem-alerta.sucesso {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.mensagem-alerta.erro {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* Utilitários e Rodapé */
+
+.oculto {
+  display: none !important;
+}
+
+.rodape-principal {
+  margin-top: auto;
+  background-color: var(--cor-superficie);
+  border-top: 1px solid var(--cor-borda);
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--cor-texto-mutado);
 }
